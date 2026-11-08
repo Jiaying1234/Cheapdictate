@@ -35,7 +35,6 @@ short clips waste quota.
 - Setting to change the hold-to-record key
 
 ## NOT in V1 (maybe V2)
-- Saving history (keep only the latest 10 transcriptions)
 - Second AI call to clean up text and add punctuation
 - Mac/Linux support, other languages, offline mode
 
@@ -43,13 +42,13 @@ short clips waste quota.
 - **M1: Groq connected.** Send a sample audio file, get text back in the terminal. **Done.**
 - **M2: Microphone recording.** Record from the mic and save a short clip. **Done.**
 - **M3: Transcribe my own voice.** Record, then transcribe, then print. **Done.**
-- **M4: Simple interface.** A window that displays the transcription.
+- **M4: Simple interface.** A window that displays the transcription output. **Done.**
 - **M5: Hold-to-record key.** Hold the key to record, release to transcribe.
 - **M6: Auto-paste.** Transcription is typed into the active text box.
 - **M7: Usage details.** Interface shows word count and audio time left today.
 - **M8: Key setting.** User can change the hold-to-record key.
 
-## Run M3
+## Run M4
 
 From the project directory, set `GROQ_API_KEY` in `.env` using `.env.example` as
 a template, then run:
@@ -58,6 +57,12 @@ a template, then run:
 .\venv\Scripts\python.exe main.py
 ```
 
-The app records 10 seconds from the default microphone, saves the clip as
+The app opens a window with a **Record and transcribe** button. It records
+10 seconds from the default microphone, saves the clip as
 `audio\recording.wav`, sends it to Groq's `whisper-large-v3-turbo` model, and
-prints the transcription.
+shows the transcription in the window. The latest 10 transcriptions are saved
+in `data\transcriptions.json`; older entries are automatically removed.
+
+The audio file is currently saved. Every recording overwrites the same
+`audio\recording.wav` file, so only the most recent audio clip is kept. Audio
+files are ignored by Git and are not uploaded to the repository.

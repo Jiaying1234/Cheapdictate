@@ -1,0 +1,38 @@
+import json
+from pathlib import Path
+
+HISTORY_PATH = Path("data/transcriptions.json")
+MAX_TRANSCRIPTIONS = 10
+
+
+def load_transcriptions(path: Path = HISTORY_PATH) -> list[str]:
+    """Load saved transcriptions, returning newest entries first."""
+    if not path.is_file():
+        return []
+
+    try:
+        contents = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as error:
+        raise RuntimeError(f"Could not read transcription history: {path}") from error
+
+    if not isinstance(contents, list) or not all(
+        isinstance(item, str) for item in contents
+    ):
+        raise RuntimeError(f"Invalid transcription history format: {path}")
+    return contents[:MAX_TRANSCRIPTIONS]
+
+
+def save_transcription(
+    transcription: str, path: Path = HISTORY_PATH
+) -> list[str]:
+    """Save a transcription and delete entries beyond the latest ten."""
+    transcriptions = [transcription, *load_transcriptions(path)][:MAX_TRANSCRIPTIONS]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        path.write_text(
+            json.dumps(transcriptions, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+    except OSError as error:
+        raise RuntimeError(f"Could not save transcription history: {path}") from error
+    return transcriptions
