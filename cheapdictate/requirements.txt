@@ -1,6 +1,6 @@
+groq
 python-dotenv
 sounddevice
 soundfile
-keyboard
+pynput
 pyperclip
-openai

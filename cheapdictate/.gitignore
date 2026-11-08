@@ -1,0 +1,18 @@
+# Virtual environment
+venv/
+
+# Secrets
+.env
+
+# Audio recordings and data
+audio/
+*.wav
+*.mp3
+
+# Python junk
+__pycache__/
+*.pyc
+
+# Editor / OS
+.vscode/
+.DS_Store
