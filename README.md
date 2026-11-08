@@ -15,9 +15,12 @@ dictation subscription.
   7,800 to 9,000 words.
 
 ## Solution
-A dictation tool built on free cloud AI APIs. Groq offers Whisper Large V3
+A dictation tool built on free cloud AI APIs. Groq offers Whisper Large V3 turbo
 with a free limit of 28,800 audio seconds/day (about 8 hours of recording
 per day).
+
+For a dictation tool, Whisper Large v3 Turbo is the clear winner because it directly solves the biggest technical hurdle of interactive dictation: latency.
+When users speak, they expect words to appear on the screen almost instantly. Large v3 Turbo’s 4-layer decoder architecture allows it to generate text 4× to 5× faster than the original Large v3, drastically reducing the time between the end of a spoken sentence and the finalized text output.
 
 Catch: Groq bills every request as a minimum of 10 seconds, so very
 short clips waste quota.
@@ -37,7 +40,7 @@ short clips waste quota.
 - Mac/Linux support, other languages, offline mode
 
 ## Milestones
-- **M1: Groq connected.** Send a sample audio file, get text back in the terminal.
+- **M1: Groq connected.** Send a sample audio file, get text back in the terminal. **Done.**
 - **M2: Microphone recording.** Record from the mic and save a short clip.
 - **M3: Transcribe my own voice.** Record, then transcribe, then print.
   Done when: a 10-second test sentence comes back with at most a few errors.
@@ -46,3 +49,15 @@ short clips waste quota.
 - **M6: Auto-paste.** Transcription is typed into the active text box.
 - **M7: Usage details.** Interface shows word count and audio time left today.
 - **M8: Key setting.** User can change the hold-to-record key.
+
+## Run M1
+
+From the project directory, with `GROQ_API_KEY` set in `.env`:
+
+```powershell
+.\venv\Scripts\python.exe main.py
+```
+
+On Windows, the first run creates `audio\sample.wav` with the sentence
+"squirtle is my favourite pokemon", sends it to Groq's
+`whisper-large-v3-turbo` model, and prints the transcription.
