@@ -22,8 +22,8 @@ per day).
 For a dictation tool, Whisper Large v3 Turbo is the clear winner because it directly solves the biggest technical hurdle of interactive dictation: latency.
 When users speak, they expect words to appear on the screen almost instantly. Large v3 Turbo’s 4-layer decoder architecture allows it to generate text 4× to 5× faster than the original Large v3, drastically reducing the time between the end of a spoken sentence and the finalized text output.
 
-Catch: Groq bills every request as a minimum of 10 seconds, so very
-short clips waste quota.
+Catch: Groq bills every request as a minimum of 10 seconds, so every
+short clips waste quota. I can consider displaying the recorded time then.
 
 ## V1 (what's in)
 - Hold a chosen key to record, release to transcribe
@@ -43,12 +43,13 @@ short clips waste quota.
 - **M2: Microphone recording.** Record from the mic and save a short clip. **Done.**
 - **M3: Transcribe my own voice.** Record, then transcribe, then print. **Done.**
 - **M4: Simple interface.** A window that displays the transcription output. **Done.**
-- **M5: Hold-to-record key.** Hold the key to record, release to transcribe.
+- **M5: Hold-to-record key.** Hold right Shift to record, release to transcribe,
+  and show the recording time to two decimal places. **Done.**
 - **M6: Auto-paste.** Transcription is typed into the active text box.
-- **M7: Usage details.** Interface shows word count and audio time left today.
+- **M7: Usage details.** Interface shows word count and audio time left today. Each request counts as max(audio seconds, 10), matching Groq’s billing (verified on the Usage page).
 - **M8: Key setting.** User can change the hold-to-record key.
 
-## Run M4
+## Run M5
 
 From the project directory, set `GROQ_API_KEY` in `.env` using `.env.example` as
 a template, then run:
@@ -57,11 +58,11 @@ a template, then run:
 .\venv\Scripts\python.exe main.py
 ```
 
-The app opens a window with a **Record and transcribe** button. It records
-10 seconds from the default microphone, saves the clip as
-`audio\recording.wav`, sends it to Groq's `whisper-large-v3-turbo` model, and
-shows the transcription in the window. The latest 10 transcriptions are saved
-in `data\transcriptions.json`; older entries are automatically removed.
+The app opens a window. Hold **right Shift** to record from the default
+microphone, then release it to save the clip as `audio\recording.wav`, send it
+to Groq's `whisper-large-v3-turbo` model, and show the transcription. The
+recording time is shown to two decimal places. The latest 10 transcriptions are
+saved in `data\transcriptions.json`; older entries are automatically removed.
 
 The audio file is currently saved. Every recording overwrites the same
 `audio\recording.wav` file, so only the most recent audio clip is kept. Audio
