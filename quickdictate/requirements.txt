@@ -1,0 +1,6 @@
+python-dotenv
+sounddevice
+soundfile
+keyboard
+pyperclip
+openai
