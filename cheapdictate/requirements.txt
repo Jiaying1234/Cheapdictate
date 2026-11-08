@@ -1,0 +1,6 @@
+groq
+python-dotenv
+sounddevice
+soundfile
+pynput
+pyperclip
