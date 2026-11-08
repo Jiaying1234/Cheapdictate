@@ -41,23 +41,23 @@ short clips waste quota.
 
 ## Milestones
 - **M1: Groq connected.** Send a sample audio file, get text back in the terminal. **Done.**
-- **M2: Microphone recording.** Record from the mic and save a short clip.
-- **M3: Transcribe my own voice.** Record, then transcribe, then print.
-  Done when: a 10-second test sentence comes back with at most a few errors.
+- **M2: Microphone recording.** Record from the mic and save a short clip. **Done.**
+- **M3: Transcribe my own voice.** Record, then transcribe, then print. **Done.**
 - **M4: Simple interface.** A window that displays the transcription.
 - **M5: Hold-to-record key.** Hold the key to record, release to transcribe.
 - **M6: Auto-paste.** Transcription is typed into the active text box.
 - **M7: Usage details.** Interface shows word count and audio time left today.
 - **M8: Key setting.** User can change the hold-to-record key.
 
-## Run M1
+## Run M3
 
-From the project directory, with `GROQ_API_KEY` set in `.env`:
+From the project directory, set `GROQ_API_KEY` in `.env` using `.env.example` as
+a template, then run:
 
 ```powershell
 .\venv\Scripts\python.exe main.py
 ```
 
-On Windows, the first run creates `audio\sample.wav` with the sentence
-"squirtle is my favourite pokemon", sends it to Groq's
-`whisper-large-v3-turbo` model, and prints the transcription.
+The app records 10 seconds from the default microphone, saves the clip as
+`audio\recording.wav`, sends it to Groq's `whisper-large-v3-turbo` model, and
+prints the transcription.
