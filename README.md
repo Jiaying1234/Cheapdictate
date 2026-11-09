@@ -25,7 +25,7 @@ When users speak, they expect words to appear on the screen almost instantly. La
 Catch: Groq bills every request as a minimum of 10 seconds, so every
 short clips waste quota. I can consider displaying the recorded time then.
 
-## V1 (what's in)
+## Features in V1
 - Hold a chosen key to record, release to transcribe
 - Groq API does the transcription
 - Transcription shown in the app's own window
@@ -34,8 +34,8 @@ short clips waste quota. I can consider displaying the recorded time then.
 - Shows word count of each transcription and audio time left today
 - Setting to change the hold-to-record key
 
-## NOT in V1 (maybe V2)
-- Second AI call to clean up text and add punctuation
+## Maybe features in V2
+- Second AI call to understand text context and clean up text
 - Mac/Linux support, other languages, offline mode
 
 ## Milestones
@@ -53,24 +53,14 @@ short clips waste quota. I can consider displaying the recorded time then.
   **Done.**
 - **M8: Key setting.** User can change the hold-to-record key.
 
-## Run M7
 
-From the project directory, set `GROQ_API_KEY` in `.env` using `.env.example` as
-a template, then run:
-
-```powershell
-.\venv\Scripts\python.exe main.py
-```
-
-The app opens a window. Hold **right Shift** to record from the default
+## Notes 
+- Hold **right Shift** to record from the default
 microphone, then release it to save the clip as `audio\recording.wav`, send it
 to Groq's `whisper-large-v3-turbo` model, paste the transcription into the
-currently focused text box, and show the transcription. The recording time is
-shown to two decimal places. The latest 10 transcriptions are saved in
+currently focused text box, and show the transcription.
+- Every recording overwrites the same
+`audio\recording.wav` file, so only the most recent audio clip is kept.
+- Latest 10 transcriptions are saved in
 `data\transcriptions.json`; older entries are automatically removed.
-
-The audio file is currently saved. Every recording overwrites the same
-`audio\recording.wav` file, so only the most recent audio clip is kept. Audio
-files are ignored by Git and are not uploaded to the repository.
-
-Daily usage is saved in `data\usage.json` and resets automatically each day.
+- Daily usage is saved in `data\usage.json` and resets automatically each day.
