@@ -8,6 +8,7 @@ venv/
 audio/
 *.wav
 *.mp3
+data/usage.json
 
 # Python junk
 __pycache__/
