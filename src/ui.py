@@ -1,10 +1,13 @@
 import threading
+import time
 import tkinter as tk
 from collections.abc import Callable
 from pathlib import Path
+from threading import Event
 from tkinter import messagebox, ttk
 
 from src.history import load_transcriptions, save_transcription
+from src.hotkey import RightShiftHotkey
 from src.recorder import record_audio
 from src.transcriber import transcribe_audio
 
@@ -23,6 +26,11 @@ class TranscriptionWindow:
         self.api_key = api_key
         self.audio_path = audio_path
         self.on_transcription = on_transcription
+        self._recording = False
+        self._processing = False
+        self._stop_recording = Event()
+        self._recording_started_at = 0.0
+        self._timer_job: str | None = None
 
         root.title("Cheapdictate")
         root.geometry("620x420")
@@ -37,10 +45,19 @@ class TranscriptionWindow:
         self.status = ttk.Label(frame, text="Ready to record.")
         self.status.pack(anchor=tk.W, pady=(4, 12))
 
-        self.record_button = ttk.Button(
-            frame, text="Record and transcribe", command=self.start_recording
+        ttk.Label(
+            frame,
+            text="Hold Right Shift to record, then release to transcribe.",
+        ).pack(anchor=tk.W)
+        self.recording_time = ttk.Label(frame, text="Recording time: 0.00 seconds")
+        self.recording_time.pack(anchor=tk.W, pady=(4, 12))
+
+        self.hotkey = RightShiftHotkey(
+            on_press=lambda: self.root.after(0, self.start_recording),
+            on_release=lambda: self.root.after(0, self.stop_recording),
         )
-        self.record_button.pack(anchor=tk.W)
+        self.hotkey.start()
+        root.protocol("WM_DELETE_WINDOW", self.close)
 
         ttk.Label(frame, text="Latest transcriptions").pack(anchor=tk.W, pady=(18, 4))
         history_frame = ttk.Frame(frame)
@@ -61,13 +78,36 @@ class TranscriptionWindow:
             self.history.insert(tk.END, transcription)
 
     def start_recording(self) -> None:
-        self.record_button.configure(state=tk.DISABLED)
-        self.status.configure(text="Recording for 10 seconds...")
-        threading.Thread(target=self._record_and_transcribe, daemon=True).start()
+        if self._recording or self._processing:
+            return
+
+        self._recording = True
+        self._processing = True
+        self._stop_recording.clear()
+        self._recording_started_at = time.perf_counter()
+        self.status.configure(text="Recording...")
+        self._update_recording_time()
+        threading.Thread(
+            target=self._record_and_transcribe,
+            daemon=True,
+        ).start()
+
+    def stop_recording(self) -> None:
+        if self._recording:
+            self._recording = False
+            self._stop_recording.set()
+
+    def _update_recording_time(self) -> None:
+        if not self._recording:
+            return
+        elapsed = time.perf_counter() - self._recording_started_at
+        self.recording_time.configure(text=f"Recording time: {elapsed:.2f} seconds")
+        self._timer_job = self.root.after(50, self._update_recording_time)
 
     def _record_and_transcribe(self) -> None:
         try:
-            record_audio(self.audio_path)
+            record_audio(self.audio_path, self._stop_recording)
+            duration = time.perf_counter() - self._recording_started_at
             self._set_status("Transcribing with Groq...")
             transcription = transcribe_audio(self.audio_path, self.api_key)
             save_transcription(transcription)
@@ -75,19 +115,31 @@ class TranscriptionWindow:
             self.root.after(0, self._show_error, str(error))
             return
 
-        self.root.after(0, self._show_transcription, transcription)
+        self.root.after(0, self._show_transcription, transcription, duration)
 
     def _set_status(self, text: str) -> None:
         self.root.after(0, self.status.configure, {"text": text})
 
-    def _show_transcription(self, transcription: str) -> None:
+    def _show_transcription(self, transcription: str, duration: float) -> None:
         self.refresh_history()
+        self._processing = False
+        self.recording_time.configure(text=f"Recording time: {duration:.2f} seconds")
         self.status.configure(text="Transcription complete.")
-        self.record_button.configure(state=tk.NORMAL)
         if self.on_transcription:
             self.on_transcription(transcription)
 
     def _show_error(self, message: str) -> None:
+        self._recording = False
+        self._processing = False
+        if self._timer_job is not None:
+            self.root.after_cancel(self._timer_job)
+            self._timer_job = None
         self.status.configure(text="Something went wrong.")
-        self.record_button.configure(state=tk.NORMAL)
         messagebox.showerror("Cheapdictate error", message, parent=self.root)
+
+    def close(self) -> None:
+        self.hotkey.stop()
+        self._stop_recording.set()
+        if self._timer_job is not None:
+            self.root.after_cancel(self._timer_job)
+        self.root.destroy()
