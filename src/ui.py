@@ -8,9 +8,14 @@ from threading import Event
 from tkinter import messagebox, ttk
 
 from src.history import Transcription, load_transcriptions, save_transcription
-from src.hotkey import RightShiftHotkey
+from src.hotkey import Hotkey
 from src.paster import paste_text
 from src.recorder import record_audio
+from src.settings import (
+    HOTKEY_OPTIONS,
+    load_hotkey,
+    save_hotkey as persist_hotkey,
+)
 from src.transcriber import transcribe_audio
 from src.usage_tracker import (
     audio_time_left,
@@ -40,6 +45,7 @@ class TranscriptionWindow:
         self._stop_recording = Event()
         self._recording_started_at = 0.0
         self._timer_job: str | None = None
+        self._hotkey_name = load_hotkey()
 
         root.title("Cheapdictate")
         root.geometry("620x420")
@@ -54,16 +60,28 @@ class TranscriptionWindow:
         self.status = ttk.Label(frame, text="Ready to record.")
         self.status.pack(anchor=tk.W, pady=(4, 12))
 
-        ttk.Label(
-            frame,
-            text="Hold Right Shift to record, then release to transcribe.",
-        ).pack(anchor=tk.W)
+        settings_frame = ttk.Frame(frame)
+        settings_frame.pack(anchor=tk.W, fill=tk.X, pady=(0, 8))
+        ttk.Label(settings_frame, text="Hold this key to record:").pack(side=tk.LEFT)
+        self.hotkey_choice = tk.StringVar(value=self._hotkey_name)
+        self.hotkey_picker = ttk.Combobox(
+            settings_frame,
+            textvariable=self.hotkey_choice,
+            values=HOTKEY_OPTIONS,
+            state="readonly",
+            width=12,
+        )
+        self.hotkey_picker.pack(side=tk.LEFT, padx=(8, 8))
+        ttk.Button(
+            settings_frame, text="Save hotkey", command=self.save_hotkey
+        ).pack(side=tk.LEFT)
         self.recording_time = ttk.Label(frame, text="Recording time: 0.00 seconds")
         self.recording_time.pack(anchor=tk.W, pady=(4, 12))
         self.usage_info = ttk.Label(frame)
         self.usage_info.pack(anchor=tk.W, pady=(4, 0))
 
-        self.hotkey = RightShiftHotkey(
+        self.hotkey = Hotkey(
+            self._hotkey_name,
             on_press=lambda: self.root.after(0, self.start_recording),
             on_release=lambda: self.root.after(0, self.stop_recording),
         )
@@ -110,6 +128,39 @@ class TranscriptionWindow:
         self.history_text_labels: list[tk.Label] = []
         self.refresh_history()
         self.refresh_usage()
+
+    def save_hotkey(self) -> None:
+        """Apply and persist a hotkey selected from the available options."""
+        if self._recording or self._processing:
+            messagebox.showwarning(
+                "Recording in progress",
+                "Wait until the current transcription is complete before changing the hotkey.",
+                parent=self.root,
+            )
+            return
+        replacement: Hotkey | None = None
+        try:
+            selected = self.hotkey_choice.get()
+            replacement = Hotkey(
+                selected,
+                on_press=lambda: self.root.after(0, self.start_recording),
+                on_release=lambda: self.root.after(0, self.stop_recording),
+            )
+            replacement.start()
+            persist_hotkey(selected)
+        except (OSError, RuntimeError, ValueError) as error:
+            if replacement is not None:
+                replacement.stop()
+            messagebox.showerror("Could not apply hotkey", str(error), parent=self.root)
+            self.hotkey_choice.set(self._hotkey_name)
+            return
+
+        if replacement is None:
+            return
+        self.hotkey.stop()
+        self.hotkey = replacement
+        self._hotkey_name = selected
+        self.status.configure(text=f"Hotkey saved: {selected}")
 
     def refresh_history(self) -> None:
         for child in self.history_content.winfo_children():
