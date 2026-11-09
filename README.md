@@ -45,7 +45,7 @@ short clips waste quota. I can consider displaying the recorded time then.
 - **M4: Simple interface.** A window that displays the transcription output. **Done.**
 - **M5: Hold-to-record key.** Hold right Shift to record, release to transcribe,
   and show the recording time to two decimal places. **Done.**
-- **M6: Auto-paste.** Transcription is typed into the active text box.
+- **M6: Auto-paste.** Transcription is pasted into the active text box. **Done.**
 - **M7: Usage details.** Interface shows word count and audio time left today. Each request counts as max(audio seconds, 10), matching Groq’s billing (verified on the Usage page).
 - **M8: Key setting.** User can change the hold-to-record key.
 
@@ -60,9 +60,10 @@ a template, then run:
 
 The app opens a window. Hold **right Shift** to record from the default
 microphone, then release it to save the clip as `audio\recording.wav`, send it
-to Groq's `whisper-large-v3-turbo` model, and show the transcription. The
-recording time is shown to two decimal places. The latest 10 transcriptions are
-saved in `data\transcriptions.json`; older entries are automatically removed.
+to Groq's `whisper-large-v3-turbo` model, paste the transcription into the
+currently focused text box, and show the transcription. The recording time is
+shown to two decimal places. The latest 10 transcriptions are saved in
+`data\transcriptions.json`; older entries are automatically removed.
 
 The audio file is currently saved. Every recording overwrites the same
 `audio\recording.wav` file, so only the most recent audio clip is kept. Audio

@@ -8,6 +8,7 @@ from tkinter import messagebox, ttk
 
 from src.history import load_transcriptions, save_transcription
 from src.hotkey import RightShiftHotkey
+from src.paster import paste_text
 from src.recorder import record_audio
 from src.transcriber import transcribe_audio
 
@@ -111,6 +112,7 @@ class TranscriptionWindow:
             self._set_status("Transcribing with Groq...")
             transcription = transcribe_audio(self.audio_path, self.api_key)
             save_transcription(transcription)
+            paste_text(transcription)
         except Exception as error:
             self.root.after(0, self._show_error, str(error))
             return
