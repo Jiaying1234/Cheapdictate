@@ -46,10 +46,14 @@ short clips waste quota. I can consider displaying the recorded time then.
 - **M5: Hold-to-record key.** Hold right Shift to record, release to transcribe,
   and show the recording time to two decimal places. **Done.**
 - **M6: Auto-paste.** Transcription is pasted into the active text box. **Done.**
-- **M7: Usage details.** Interface shows word count and audio time left today. Each request counts as max(audio seconds, 10), matching Groq’s billing (verified on the Usage page).
+- **M7: Usage details.** Interface shows total words transcribed today and audio
+  time left today in hours and minutes. Each request counts as max(audio seconds,
+  10), matching Groq's billing (verified on the Usage page). Transcriptions show
+  their logged time in a wrapped, scrollable list.
+  **Done.**
 - **M8: Key setting.** User can change the hold-to-record key.
 
-## Run M5
+## Run M7
 
 From the project directory, set `GROQ_API_KEY` in `.env` using `.env.example` as
 a template, then run:
@@ -68,3 +72,5 @@ shown to two decimal places. The latest 10 transcriptions are saved in
 The audio file is currently saved. Every recording overwrites the same
 `audio\recording.wav` file, so only the most recent audio clip is kept. Audio
 files are ignored by Git and are not uploaded to the repository.
+
+Daily usage is saved in `data\usage.json` and resets automatically each day.

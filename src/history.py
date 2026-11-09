@@ -1,11 +1,18 @@
 import json
+from datetime import datetime
 from pathlib import Path
+from typing import TypedDict
 
 HISTORY_PATH = Path("data/transcriptions.json")
 MAX_TRANSCRIPTIONS = 10
 
 
-def load_transcriptions(path: Path = HISTORY_PATH) -> list[str]:
+class Transcription(TypedDict):
+    text: str
+    timestamp: str | None
+
+
+def load_transcriptions(path: Path = HISTORY_PATH) -> list[Transcription]:
     """Load saved transcriptions, returning newest entries first."""
     if not path.is_file():
         return []
@@ -15,18 +22,37 @@ def load_transcriptions(path: Path = HISTORY_PATH) -> list[str]:
     except (OSError, json.JSONDecodeError) as error:
         raise RuntimeError(f"Could not read transcription history: {path}") from error
 
-    if not isinstance(contents, list) or not all(
-        isinstance(item, str) for item in contents
-    ):
+    if not isinstance(contents, list):
         raise RuntimeError(f"Invalid transcription history format: {path}")
-    return contents[:MAX_TRANSCRIPTIONS]
+
+    transcriptions: list[Transcription] = []
+    for item in contents[:MAX_TRANSCRIPTIONS]:
+        if isinstance(item, str):
+            transcriptions.append({"text": item, "timestamp": None})
+        elif (
+            isinstance(item, dict)
+            and isinstance(item.get("text"), str)
+            and (item.get("timestamp") is None or isinstance(item.get("timestamp"), str))
+        ):
+            transcriptions.append(
+                {"text": item["text"], "timestamp": item.get("timestamp")}
+            )
+        else:
+            raise RuntimeError(f"Invalid transcription history format: {path}")
+    return transcriptions
 
 
 def save_transcription(
     transcription: str, path: Path = HISTORY_PATH
-) -> list[str]:
+) -> list[Transcription]:
     """Save a transcription and delete entries beyond the latest ten."""
-    transcriptions = [transcription, *load_transcriptions(path)][:MAX_TRANSCRIPTIONS]
+    transcriptions = [
+        {
+            "text": transcription,
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+        },
+        *load_transcriptions(path),
+    ][:MAX_TRANSCRIPTIONS]
     path.parent.mkdir(parents=True, exist_ok=True)
     try:
         path.write_text(
