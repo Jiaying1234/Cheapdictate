@@ -1,42 +1,42 @@
 [
   {
+    "text": "The timing is locked down.",
+    "timestamp": "2026-11-09T23:07:18"
+  },
+  {
+    "text": "Lock the timing down.",
+    "timestamp": "2026-11-09T23:07:09"
+  },
+  {
+    "text": "Okay testing, our project time left today is 7 hours and 9 minutes. Let's record for roughly 2 minutes and let's see it go down to 7 hours and 27 minutes. Then as for our latest transcriptions, if you show me the timing that is locked on the left, and then if you show me the amount of words that I spoke today, I don't really let this enter things but I think it is made with tinker, so I don't know how much of the design we can change but whatever it works. then I guess I also need a desktop shortcut that I can pin to my taskbar. If I need a second API call, it will probably be the latency log.",
+    "timestamp": "2026-11-09T23:06:35"
+  },
+  {
+    "text": "Test test test, trying out my dictation tool and it takes really fast.",
+    "timestamp": "2026-11-09T23:05:35"
+  },
+  {
+    "text": "Thank you.",
+    "timestamp": "2026-11-09T22:46:51"
+  },
+  {
+    "text": "Thank you.",
+    "timestamp": "2026-11-09T22:46:07"
+  },
+  {
+    "text": "Thank you.",
+    "timestamp": "2026-11-09T22:45:52"
+  },
+  {
+    "text": "Thank you.",
+    "timestamp": "2026-11-09T22:45:41"
+  },
+  {
+    "text": "Thank you.",
+    "timestamp": "2026-11-09T22:44:37"
+  },
+  {
     "text": "Okay, testing, I have project time left today 7 hours and 9 minutes. Let's record for roughly 2 minutes and let's see it go down to 7 hours 57 minutes. And then as for my latest transcriptions, it should show me the timing that is locked on the left. And then, yeah, it should show me the amount of words that I spoke today. yeah anyway I don't really like this enter things but I think it is made with tinker so I don't know how much of the design we can change but whatever it works then I guess I would also need um like a like a desktop shortcut that I can pin to my taskbar so I can turn on the application tool at all times. I think this is for Windows working on Windows right now only i don know if it will work on linux or mac oh and then as for using a second ai or like a separate ai for clean up oh also i noticed the seconds are in um after 60 seconds it just shows by like more seconds but maybe i should put it in like one minute and then seconds i think that makes more sense so yeah um i'll change it to seconds to minute to a minute okay so anytime now so it'd be 120 seconds also i think the second api call it would probably make the latency a lot longer because right now it's right after i speak then the words appear immediately which is great yeah",
     "timestamp": "2026-11-09T20:14:04"
-  },
-  {
-    "text": "That was a little right shit to record.",
-    "timestamp": null
-  },
-  {
-    "text": "All right shift to record and release to transcribe. Recording time 10 seconds, last transcription, the amount of words, audio time left today, 8 hours and latest transcriptions.",
-    "timestamp": null
-  },
-  {
-    "text": "Test test test, trying out my detection tool and it takes really fast.",
-    "timestamp": null
-  },
-  {
-    "text": "What am I helpful?",
-    "timestamp": null
-  },
-  {
-    "text": "Search for 24-hour places at Coffee Bean.",
-    "timestamp": null
-  },
-  {
-    "text": "Now I'm trying the copy paste function, it should paste into this text box, current text box with co-pilot.",
-    "timestamp": null
-  },
-  {
-    "text": "This is M6 auto paste. Edit paste text using clipboard plus Ctrl plus V in the current focused window. Wired auto paste.",
-    "timestamp": null
-  },
-  {
-    "text": "Accident",
-    "timestamp": null
-  },
-  {
-    "text": "You know you're turning on, babe Give me that morning dew, morning dew Digong, kidong, kidong, kidong Dong, kidong, kidong, kidong, kidong, kidong Boy, boy, if you don't mind Just kicking this little game of mine, he said",
-    "timestamp": null
   }
 ]

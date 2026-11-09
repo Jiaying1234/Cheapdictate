@@ -51,11 +51,11 @@ short clips waste quota. I can consider displaying the recorded time then.
   10), matching Groq's billing (verified on the Usage page). Transcriptions show
   their logged time in a wrapped, scrollable list.
   **Done.**
-- **M8: Key setting.** User can change the hold-to-record key.
+- **M8: Key setting.** User can change the hold-to-record key. **Done.**
 
 
 ## Notes 
-- Hold **right Shift** to record from the default
+- Hold the configured hotkey (right Shift by default) to record from the default
 microphone, then release it to save the clip as `audio\recording.wav`, send it
 to Groq's `whisper-large-v3-turbo` model, paste the transcription into the
 currently focused text box, and show the transcription.
@@ -64,3 +64,6 @@ currently focused text box, and show the transcription.
 - Latest 10 transcriptions are saved in
 `data\transcriptions.json`; older entries are automatically removed.
 - Daily usage is saved in `data\usage.json` and resets automatically each day.
+- The hold-to-record key can be changed in the app and is saved in
+`data\settings.json`. The app shows only supported hotkey choices and keeps
+the previous hotkey active if the replacement listener cannot be started.
